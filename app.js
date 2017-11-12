@@ -4,13 +4,13 @@ const http = require('http');
 const fs = require('fs');
 const util = require('util');
 
-const upload_folder = 'uploads';
+const upload_directory = 'uploads';
 
 try {
-  fs.lstatSync(upload_folder).isDirectory();
+  fs.lstatSync(upload_directory).isDirectory();
 } catch(e){
    if(e.code == 'ENOENT'){
-    console.log('ERROR: Upload directory does not exist!');
+    console.log('ERROR: Upload directory '+upload_directory+' does not exist!');
     return false;
    }
 }
@@ -26,9 +26,9 @@ http.createServer(function(req, res) {
 
       res.writeHead(200, {'content-type': 'application/json'});
 
-      console.log('Trying to move '+file.path+' to '+upload_folder+'/'+file.name);
+      console.log('Trying to move '+file.path+' to '+upload_directory+'/'+file.name);
 
-      fs.rename(file.path, upload_folder+'/'+file.name, function(err){
+      fs.rename(file.path, upload_directory+'/'+file.name, function(err){
         if(err){
           console.log('ERROR: Move failed');
           res.end(JSON.stringify({'status': 'FAIL'}));
@@ -37,7 +37,7 @@ http.createServer(function(req, res) {
 
         console.log('File move succeeded');
 
-        fs.readdir(upload_folder, function(err, files){
+        fs.readdir(upload_directory, function(err, files){
           res.end(JSON.stringify({'status': 'OK', 'files': files}));
         });
 
