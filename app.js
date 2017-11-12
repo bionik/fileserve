@@ -4,6 +4,7 @@ const http = require('http');
 const fs = require('fs');
 const util = require('util');
 
+const server_port = 9000;
 const upload_directory = 'uploads';
 
 try {
@@ -59,4 +60,4 @@ http.createServer(function(req, res) {
     res.end(data);
   });
 
-}).listen(8080);
+}).listen(server_port);
