@@ -1,0 +1,13 @@
+{
+  "name": "fileserve",
+  "version": "0.0.1",
+  "license": "GPL-2.0",
+  "author": {
+    "name": "Lauri Hakkarainen",
+    "url": "https://github.com/bionik/fileserve",
+    "email": "bionik@gmail.com"
+  },
+  "dependencies": {
+    "formidable": "^1.1.1"
+  }
+}
