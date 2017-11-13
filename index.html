@@ -1,4 +1,139 @@
-<form action="/upload" enctype="multipart/form-data" method="post">
-  <input type="file" name="upload"><br>
-  <input type="submit" value="Upload">
-</form>
+<!doctype html>
+<html>
+  <head>
+    <title>
+      fileserv.
+    </title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+      html, body {
+        height:  100%;
+      }
+      html {
+        font-size: 16px;
+      }
+      body {
+        font-family: 'Helvetica', helvetica, 'Helvetica Neue', arial, sans-serif;
+        color: #f8f8f8;
+        background: #222;
+        margin: 40px;
+      }
+      h1 {
+        font-size: 64px;
+        letter-spacing: -0.08em;
+        margin: 0;
+        line-height: 0.8;
+        margin-bottom: 16px;
+      }
+      form {
+        border: 1px solid #444;
+        position: relative;
+        padding: 32px;
+      }
+      form input {
+        outline: none;
+      }
+      form input[name="upload"] {
+        width: 0.1px;
+        height: 0.1px;
+        opacity: 0;
+        overflow: hidden;
+        position: absolute;
+        z-index: -1;
+      }
+      form.drag-hover {
+        background: #333;
+      }
+      form.uploading {
+        background: repeating-linear-gradient(
+          -54deg,
+          #222,
+          #222 10px,
+          #333 10px,
+          #333 20px
+        );
+        background-size: 198px 200px;
+        animation: animatedBackground 20s linear infinite;
+      }
+      @keyframes animatedBackground {
+        from { background-position: 0 0; }
+        to { background-position: 100% 0; }
+      }
+      form.drag-hover::before {
+        content: '';
+        position: absolute;
+        top: 4px;
+        left: 4px;
+        right: 4px;
+        bottom: 4px;
+        border: 4px dashed #444;
+      }
+      form .upload-area {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+      }
+      form .upload-area span {
+        display: block;
+        padding-left: 20px;
+        line-height: 1.0;
+        margin-top: -0.5em;
+        position: relative;
+        top: 50%;
+      }
+      form .upload-area span i {
+        font-style: normal;
+      }
+      form .upload-area .drag {
+        display: none;
+      }
+      html.advanced-support form .upload-area {
+        display: block;
+      }
+      html.advanced-support form .upload-area .drag {
+        display: inline;
+      }
+      @media screen and (max-width: 360px) {
+        html {
+          font-size: 13px;
+        }
+      }
+    </style>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.min.js"></script>
+  </head>
+  <body>
+    <h1>fileserv.</h1>
+    <form action="/upload" enctype="multipart/form-data" method="post">
+      <label class="upload-area" for="upload"><span>Click <i class="drag">or drag files</i> here to upload.</span></label>
+      <input type="file" name="upload" id="upload"/>
+    </form>
+    <script>
+      var isAdvancedUpload = function() {
+        var div = document.createElement('div');
+        return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+      }();
+      if(isAdvancedUpload){
+        $('html').addClass('advanced-support');
+      }
+      $(document).ready(function(){
+        var dropped_files = false;
+        var form = $('form');
+        $(form).on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+        })
+        .on('dragover dragenter', function() {
+          $(form).addClass('drag-hover');
+        })
+        .on('dragleave dragend drop', function() {
+          $(form).removeClass('drag-hover');
+        })
+        .on('drop', function(e) {
+          dropped_files = e.dataTransfer.files;
+        });
+      });
+    </script>
+  </body>
+</html>

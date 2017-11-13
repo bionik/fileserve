@@ -24,27 +24,28 @@ http.createServer(function(req, res) {
 
     form.parse(req, function(err, fields, files){
       var file = files.upload;
-
       res.writeHead(200, {'content-type': 'application/json'});
-
       console.log('Trying to move '+file.path+' to '+upload_directory+'/'+file.name);
-
       fs.rename(file.path, upload_directory+'/'+file.name, function(err){
         if(err){
           console.log('ERROR: Move failed');
           res.end(JSON.stringify({'status': 'FAIL'}));
           return;
         }
-
         console.log('File move succeeded');
-
         fs.readdir(upload_directory, function(err, files){
           res.end(JSON.stringify({'status': 'OK', 'files': files}));
         });
-
       });
     });
+    return;
 
+    //Check if there is a POST to /files
+  } else if (req.url == '/files'){
+    res.writeHead(200, {'content-type': 'application/json'});
+    fs.readdir(upload_directory, function(err, files){
+      res.end(JSON.stringify({'status': 'OK', 'files': files}));
+    });
     return;
   }
 
@@ -53,7 +54,7 @@ http.createServer(function(req, res) {
     if(err){
       console.log('ERROR: index.html cannot be read!');
       res.writeHead(404, {'content-type': 'text/html'});
-      res.end('404');
+      res.end('<h1>Error 404. File not found.</h1>');
       return false;
     }
     res.writeHead(200, {'content-type': 'text/html'});
